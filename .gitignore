@@ -1,0 +1,12 @@
+# dependencies
+/.yarn/install-state.gz
+/node_modules
+
+# production
+/dist
+
+# environment variables
+/.env
+
+# IDE
+/.vscode
