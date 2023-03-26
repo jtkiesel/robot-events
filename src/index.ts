@@ -1,6 +1,5 @@
 import axios from 'axios';
 import axiosRateLimit, {type rateLimitOptions} from 'axios-rate-limit';
-import 'source-map-support/register';
 import {Awards} from './clients/awards';
 import {Events} from './clients/events';
 import {Matches} from './clients/matches';
