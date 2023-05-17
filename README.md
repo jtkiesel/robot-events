@@ -1,15 +1,15 @@
-# robot-events
+# @robotevents/client
 
 A Robot Events API client.
 
 ## Installing
 
-**Node.js 14.0.0 or newer is required.**
+**Node.js 16.0.0 or newer is required.**
 
 ```sh
-npm install robot-events
-yarn add robot-events
-pnpm add robot-events
+npm install @robotevents/client
+yarn add @robotevents/client
+pnpm add @robotevents/client
 ```
 
 ## Example usage
@@ -17,17 +17,19 @@ pnpm add robot-events
 Obtain a team from the Robot Events API:
 
 ```js
-import {RobotEventsClient} from 'robot-events';
+import {ProgramId, RobotEventsClient} from '@robotevents/client';
 
 const robotEventsClient = new RobotEventsClient({
   token: process.env.ROBOT_EVENTS_TOKEN,
 });
 
-(async () => {
-  const team = await robotEventsClient.teams
-    .findAll(t => t.programIds(1, 4).numbers('24C'))
-    .next();
+const teams = await robotEventsClient.teams
+  .findAll(_ => _.programIds(ProgramId.VRC).numbers('24C'))
+  .toArray();
 
-  console.log(team);
-})();
+if (teams.length) {
+  console.log(teams[0]);
+} else {
+  console.log('Team not found');
+}
 ```

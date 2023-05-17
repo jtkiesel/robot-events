@@ -1,34 +1,36 @@
-import type {Award} from '.';
-import {Client} from '../client';
-import type {Cursor} from '../cursor';
+import type {ObjectBuilder} from '../../builders.js';
+import {Client} from '../client.js';
 import {
-  PageableParams,
   PageableRequest,
   PageableRequestBuilder,
-} from '../pageable';
-import type {ObjectBuilder} from '../builders';
+  type PageableParams,
+} from '../pageable.js';
+import type {Award} from './index.js';
 
-export class Awards extends Client {
+export class AwardsClient extends Client {
   public findAllByEvent(
     request: (
       builder: EventAwardsRequestBuilder
     ) => ObjectBuilder<EventAwardsRequest>
-  ): Cursor<Award> {
+  ) {
     const req = request(new EventAwardsRequestBuilder()).build();
-    return this.getAll(`/events/${req.eventId}/awards`, req.params());
+    return this.getAll<Award>(`/events/${req.eventId}/awards`, req.params());
   }
 
   public findAllByTeam(
     request: (
       builder: TeamAwardsRequestBuilder
     ) => ObjectBuilder<TeamAwardsRequest>
-  ): Cursor<Award> {
+  ) {
     const req = request(new TeamAwardsRequestBuilder()).build();
-    return this.getAll(`/teams/${req.teamId}/awards`, req.params());
+    return this.getAll<Award>(`/teams/${req.teamId}/awards`, req.params());
   }
 }
 
-export class EventAwardsRequestBuilder extends PageableRequestBuilder<EventAwardsRequestBuilder> {
+export class EventAwardsRequestBuilder extends PageableRequestBuilder<
+  EventAwardsRequest,
+  EventAwardsRequestBuilder
+> {
   #eventId?: number;
   #teamIds?: number[];
   #individuals?: string[];
@@ -48,7 +50,7 @@ export class EventAwardsRequestBuilder extends PageableRequestBuilder<EventAward
     return this;
   }
 
-  public build() {
+  public override build() {
     return new EventAwardsRequest(this);
   }
 
@@ -80,7 +82,10 @@ interface EventAwardsParams extends PageableParams {
   winner?: string[];
 }
 
-export class TeamAwardsRequestBuilder extends PageableRequestBuilder<TeamAwardsRequestBuilder> {
+export class TeamAwardsRequestBuilder extends PageableRequestBuilder<
+  TeamAwardsRequest,
+  TeamAwardsRequestBuilder
+> {
   #teamId?: number;
   #eventIds?: number[];
   #seasonIds?: number[];
@@ -100,7 +105,7 @@ export class TeamAwardsRequestBuilder extends PageableRequestBuilder<TeamAwardsR
     return this;
   }
 
-  public build() {
+  public override build() {
     return new TeamAwardsRequest(this);
   }
 

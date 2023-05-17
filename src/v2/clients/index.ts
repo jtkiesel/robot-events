@@ -1,11 +1,11 @@
-export * from './awards';
-export * from './events';
-export * from './matches';
-export * from './programs';
-export * from './rankings';
-export * from './seasons';
-export * from './skills';
-export * from './teams';
+export * from './awards.js';
+export * from './events.js';
+export * from './matches.js';
+export * from './programs.js';
+export * from './rankings.js';
+export * from './seasons.js';
+export * from './skills.js';
+export * from './teams.js';
 
 export interface Alliance {
   color: AllianceColor;
@@ -14,18 +14,18 @@ export interface Alliance {
 }
 
 export enum AllianceColor {
-  RED = 'red',
-  BLUE = 'blue',
+  Red = 'red',
+  Blue = 'blue',
 }
 
 export interface AllianceTeam {
-  team: IdInfo;
+  team: IdInfo<null>;
   sitting: boolean;
 }
 
 export interface Award {
   id: number;
-  event: IdInfo;
+  event: IdInfo<string>;
   order: number;
   title: string;
   qualifications: string[];
@@ -36,15 +36,15 @@ export interface Award {
 }
 
 export enum AwardClassification {
-  CHAMPION = 'champion',
-  FINALIST = 'finalist',
-  SEMIFINALIST = 'semifinalist',
-  QUARTERFINALIST = 'quarterfinalist',
+  Champion = 'champion',
+  Finalist = 'finalist',
+  Semifinalist = 'semifinalist',
+  Quarterfinalist = 'quarterfinalist',
 }
 
 export enum AwardDesignation {
-  TOURNAMENT = 'tournament',
-  DIVISION = 'division',
+  Tournament = 'tournament',
+  Division = 'division',
 }
 
 export interface Coordinates {
@@ -62,25 +62,26 @@ export interface Event {
   id: number;
   sku: string;
   name: string;
-  start?: Date;
-  end?: Date;
-  season: IdInfo;
-  program: IdInfo;
+  start: Date;
+  end: Date;
+  season: IdInfo<null>;
+  program: IdInfo<string>;
   location: EventLocation;
-  divisions?: Division[];
-  level?: EventLevel;
-  ongoing?: boolean;
-  awards_finalized?: boolean;
-  event_type?: EventType;
+  locations: {[start: string]: EventLocation};
+  divisions: Division[];
+  level: EventLevel;
+  ongoing: boolean;
+  awards_finalized: boolean;
+  event_type: EventType | null;
 }
 
 export enum EventLevel {
-  WORLD = 'World',
-  NATIONAL = 'National',
-  REGIONAL = 'Regional',
-  STATE = 'State',
-  SIGNATURE = 'Signature',
-  OTHER = 'Other',
+  World = 'World',
+  National = 'National',
+  Regional = 'Regional',
+  State = 'State',
+  Signature = 'Signature',
+  Other = 'Other',
 }
 
 export interface EventLocation {
@@ -95,35 +96,35 @@ export interface EventLocation {
 }
 
 export enum EventType {
-  TOURNAMENT = 'tournament',
-  LEAGUE = 'league',
-  WORKSHOP = 'workshop',
-  VIRTUAL = 'virtual',
+  Tournament = 'tournament',
+  League = 'league',
+  Workshop = 'workshop',
+  Virtual = 'virtual',
 }
 
 export enum Grade {
-  COLLEGE = 'College',
-  HIGH_SCHOOL = 'High School',
-  MIDDLE_SCHOOL = 'Middle School',
-  ELEMENTARY_SCHOOL = 'Elementary School',
+  College = 'College',
+  HighSchool = 'High School',
+  MiddleSchool = 'Middle School',
+  ElementarySchool = 'Elementary School',
 }
 
-export interface IdInfo {
+export interface IdInfo<C extends string | null> {
   id: number;
   name: string;
-  code: string;
+  code: C;
 }
 
 export interface Match {
   id: number;
-  event: IdInfo;
-  division: IdInfo;
+  event: IdInfo<string>;
+  division: IdInfo<null>;
   round: number;
   instance: number;
   matchnum: number;
-  scheduled?: Date;
-  started?: Date;
-  field?: string;
+  scheduled: Date | null;
+  started: Date | null;
+  field: string | null;
   scored: boolean;
   name: string;
   alliances: Alliance[];
@@ -154,48 +155,77 @@ export interface Program {
   name: string;
 }
 
+export enum ProgramId {
+  VRC = 1,
+  VEXU = 4,
+  Workshop = 37,
+  VIQC = 41,
+  NRL = 43,
+  ADC = 44,
+  TVRC = 46,
+  TIQC = 47,
+  VRAD = 51,
+  BellAVR = 55,
+  FAC = 56,
+  VAIC = 57,
+}
+
 export interface Ranking {
   id: number;
-  event: IdInfo;
-  division: IdInfo;
+  event: IdInfo<string>;
+  division: IdInfo<null>;
   rank: number;
-  team: IdInfo;
+  team: IdInfo<null>;
   wins: number;
   losses: number;
   ties: number;
   wp: number;
   ap: number;
   sp: number;
-  high_score?: number;
-  average_points?: number;
-  total_points?: number;
+  high_score: number | null;
+  average_points: number | null;
+  total_points: number | null;
+}
+
+export enum Round {
+  Practice = 1,
+  Qualification = 2,
+  Quarterfinal = 3,
+  Semifinal = 4,
+  Final = 5,
+  RoundOf16 = 6,
+  RoundOf32 = 7,
+  RoundOf64 = 8,
+  RoundOf128 = 9,
+  TopN = 15,
+  RoundRobin = 16,
 }
 
 export interface Season {
   id: number;
   name: string;
-  program: IdInfo;
+  program: IdInfo<string>;
   start: Date;
   end: Date;
-  years_start?: number;
-  years_end?: number;
+  years_start: number | null;
+  years_end: number | null;
 }
 
 export interface Skill {
   id: number;
-  event: IdInfo;
-  team: IdInfo;
+  event: IdInfo<string>;
+  team: IdInfo<null>;
   type: SkillType;
-  season: IdInfo;
-  division: IdInfo;
+  season: IdInfo<null>;
+  division: IdInfo<null>;
   rank: number;
   score: number;
   attempts: number;
 }
 
 export enum SkillType {
-  DRIVER = 'driver',
-  PROGRAMMING = 'programming',
+  Driver = 'driver',
+  Programming = 'programming',
 }
 
 export interface Team {
@@ -206,13 +236,13 @@ export interface Team {
   organization: string | null;
   location: TeamLocation;
   registered: boolean;
-  program: IdInfo;
+  program: IdInfo<string>;
   grade: Grade;
 }
 
 export interface TeamAwardWinner {
-  division: IdInfo;
-  team: IdInfo;
+  division: IdInfo<null>;
+  team: IdInfo<null>;
 }
 
 export interface TeamLocation {

@@ -1,21 +1,20 @@
-import type {Ranking} from '.';
-import {Client} from '../client';
-import type {Cursor} from '../cursor';
+import type {ObjectBuilder} from '../../builders.js';
+import {Client} from '../client.js';
 import {
-  PageableParams,
   PageableRequest,
   PageableRequestBuilder,
-} from '../pageable';
-import type {ObjectBuilder} from '../builders';
+  type PageableParams,
+} from '../pageable.js';
+import type {Ranking} from './index.js';
 
-export class Rankings extends Client {
+export class RankingsClient extends Client {
   public findAllByEventDivision(
     request: (
       builder: EventDivisionRankingsRequestBuilder
     ) => ObjectBuilder<EventDivisionRankingsRequest>
-  ): Cursor<Ranking> {
+  ) {
     const req = request(new EventDivisionRankingsRequestBuilder()).build();
-    return this.getAll(
+    return this.getAll<Ranking>(
       `/events/${req.eventId}/divisions/${req.divisionId}/rankings`,
       req.params()
     );
@@ -25,25 +24,28 @@ export class Rankings extends Client {
     request: (
       builder: TeamRankingsRequestBuilder
     ) => ObjectBuilder<TeamRankingsRequest>
-  ): Cursor<Ranking> {
+  ) {
     const req = request(new TeamRankingsRequestBuilder()).build();
-    return this.getAll(`/teams/${req.teamId}/rankings`, req.params());
+    return this.getAll<Ranking>(`/teams/${req.teamId}/rankings`, req.params());
   }
 
   public findAllFinalistsByEventDivision(
     request: (
       builder: EventDivisionRankingsRequestBuilder
     ) => ObjectBuilder<EventDivisionRankingsRequest>
-  ): Cursor<Ranking> {
+  ) {
     const req = request(new EventDivisionRankingsRequestBuilder()).build();
-    return this.getAll(
+    return this.getAll<Ranking>(
       `/events/${req.eventId}/divisions/${req.divisionId}/finalistRankings`,
       req.params()
     );
   }
 }
 
-export class EventDivisionRankingsRequestBuilder extends PageableRequestBuilder<EventDivisionRankingsRequestBuilder> {
+export class EventDivisionRankingsRequestBuilder extends PageableRequestBuilder<
+  EventDivisionRankingsRequest,
+  EventDivisionRankingsRequestBuilder
+> {
   #eventId?: number;
   #divisionId?: number;
   #teamIds?: number[];
@@ -69,7 +71,7 @@ export class EventDivisionRankingsRequestBuilder extends PageableRequestBuilder<
     return this;
   }
 
-  public build() {
+  public override build() {
     return new EventDivisionRankingsRequest(this);
   }
 
@@ -110,7 +112,10 @@ interface EventDivisionRankingsParams extends PageableParams {
   rank?: number[];
 }
 
-export class TeamRankingsRequestBuilder extends PageableRequestBuilder<TeamRankingsRequestBuilder> {
+export class TeamRankingsRequestBuilder extends PageableRequestBuilder<
+  TeamRankingsRequest,
+  TeamRankingsRequestBuilder
+> {
   #teamId?: number;
   #eventIds?: number[];
   #ranks?: number[];
@@ -136,7 +141,7 @@ export class TeamRankingsRequestBuilder extends PageableRequestBuilder<TeamRanki
     return this;
   }
 
-  public build() {
+  public override build() {
     return new TeamRankingsRequest(this);
   }
 

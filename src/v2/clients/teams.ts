@@ -1,18 +1,17 @@
-import type {Grade, Team} from '.';
-import {Client} from '../client';
-import type {Cursor} from '../cursor';
+import type {ObjectBuilder} from '../../builders.js';
+import {Client} from '../client.js';
 import {
-  PageableParams,
   PageableRequest,
   PageableRequestBuilder,
-} from '../pageable';
-import type {ObjectBuilder} from '../builders';
+  type PageableParams,
+} from '../pageable.js';
+import type {Grade, Team} from './index.js';
 
-export class Teams extends Client {
+export class TeamsClient extends Client {
   public findAll(
     request?: (builder: TeamsRequestBuilder) => ObjectBuilder<TeamsRequest>
-  ): Cursor<Team> {
-    return this.getAll(
+  ) {
+    return this.getAll<Team>(
       '/teams',
       request?.(new TeamsRequestBuilder()).build().params()
     );
@@ -22,17 +21,20 @@ export class Teams extends Client {
     request: (
       builder: EventTeamsRequestBuilder
     ) => ObjectBuilder<EventTeamsRequest>
-  ): Cursor<Team> {
+  ) {
     const req = request(new EventTeamsRequestBuilder()).build();
-    return this.getAll(`/events/${req.eventId}/teams`, req.params());
+    return this.getAll<Team>(`/events/${req.eventId}/teams`, req.params());
   }
 
-  public async findById(id: number): Promise<Team> {
-    return this.get(`/teams/${id}`);
+  public async findById(id: number) {
+    return this.get<Team>(`/teams/${id}`);
   }
 }
 
-export class TeamsRequestBuilder extends PageableRequestBuilder<TeamsRequestBuilder> {
+export class TeamsRequestBuilder extends PageableRequestBuilder<
+  TeamsRequest,
+  TeamsRequestBuilder
+> {
   #ids?: number[];
   #numbers?: string[];
   #eventIds?: number[];
@@ -82,7 +84,7 @@ export class TeamsRequestBuilder extends PageableRequestBuilder<TeamsRequestBuil
     return this;
   }
 
-  public build(): TeamsRequest {
+  public override build(): TeamsRequest {
     return new TeamsRequest(this);
   }
 
@@ -137,7 +139,10 @@ interface TeamsParams extends PageableParams {
   myTeams?: boolean;
 }
 
-export class EventTeamsRequestBuilder extends PageableRequestBuilder<EventTeamsRequestBuilder> {
+export class EventTeamsRequestBuilder extends PageableRequestBuilder<
+  EventTeamsRequest,
+  EventTeamsRequestBuilder
+> {
   #eventId?: number;
   #numbers?: string[];
   #registered?: boolean;
@@ -175,7 +180,7 @@ export class EventTeamsRequestBuilder extends PageableRequestBuilder<EventTeamsR
     return this;
   }
 
-  public build() {
+  public override build() {
     return new EventTeamsRequest(this);
   }
 

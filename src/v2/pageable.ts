@@ -1,26 +1,30 @@
+import type { ObjectBuilder } from '../builders.js';
+
 export abstract class PageableRequestBuilder<
-  T extends PageableRequestBuilder<any>
-> {
+  T extends PageableRequest,
+  B extends PageableRequestBuilder<any, any>
+> implements ObjectBuilder<T>
+{
   #page?: number;
   #perPage?: number;
 
   public page(value: number) {
     this.#page = value;
-    return this as unknown as T;
+    return this as unknown as B;
   }
 
   public perPage(value: number) {
     this.#perPage = value;
-    return this as unknown as T;
+    return this as unknown as B;
   }
 
-  public abstract build(): PageableRequest;
+  public abstract build(): T;
 
   public static PageableRequest = class {
     public readonly page?: number;
     public readonly perPage?: number;
 
-    public constructor(builder: PageableRequestBuilder<any>) {
+    public constructor(builder: PageableRequestBuilder<any, any>) {
       this.page = builder.#page;
       this.perPage = builder.#perPage;
     }

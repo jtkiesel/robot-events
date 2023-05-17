@@ -1,31 +1,33 @@
-import type {Program} from '.';
-import {Client} from '../client';
-import type {Cursor} from '../cursor';
+import type {ObjectBuilder} from '../../builders.js';
+import {Client} from '../client.js';
 import {
-  PageableParams,
   PageableRequest,
   PageableRequestBuilder,
-} from '../pageable';
-import type {ObjectBuilder} from '../builders';
+  type PageableParams,
+} from '../pageable.js';
+import type {Program} from './index.js';
 
-export class Programs extends Client {
+export class ProgramsClient extends Client {
   public findAll(
     request?: (
       builder: ProgramsRequestBuilder
     ) => ObjectBuilder<ProgramsRequest>
-  ): Cursor<Program> {
-    return this.getAll(
+  ) {
+    return this.getAll<Program>(
       '/programs',
       request?.(new ProgramsRequestBuilder()).build().params()
     );
   }
 
-  public async findById(id: number): Promise<Program> {
-    return this.get(`/programs/${id}`);
+  public async findById(id: number) {
+    return this.get<Program>(`/programs/${id}`);
   }
 }
 
-export class ProgramsRequestBuilder extends PageableRequestBuilder<ProgramsRequestBuilder> {
+export class ProgramsRequestBuilder extends PageableRequestBuilder<
+  ProgramsRequest,
+  ProgramsRequestBuilder
+> {
   #ids?: number[];
 
   public ids(...value: number[]) {
@@ -33,7 +35,7 @@ export class ProgramsRequestBuilder extends PageableRequestBuilder<ProgramsReque
     return this;
   }
 
-  public build() {
+  public override build() {
     return new ProgramsRequest(this);
   }
 

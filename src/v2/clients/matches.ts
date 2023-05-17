@@ -1,21 +1,20 @@
-import type {Match} from '.';
-import {Client} from '../client';
-import type {Cursor} from '../cursor';
+import type {ObjectBuilder} from '../../builders.js';
+import {Client} from '../client.js';
 import {
-  PageableParams,
   PageableRequest,
   PageableRequestBuilder,
-} from '../pageable';
-import type {ObjectBuilder} from '../builders';
+  type PageableParams,
+} from '../pageable.js';
+import type {Match} from './index.js';
 
-export class Matches extends Client {
+export class MatchesClient extends Client {
   public findAllByEventDivision(
     request: (
       builder: EventDivisionMatchesRequestBuilder
     ) => ObjectBuilder<EventDivisionMatchesRequest>
-  ): Cursor<Match> {
+  ) {
     const req = request(new EventDivisionMatchesRequestBuilder()).build();
-    return this.getAll(
+    return this.getAll<Match>(
       `/events/${req.eventId}/divisions/${req.divisionId}/matches`,
       req.params()
     );
@@ -25,13 +24,16 @@ export class Matches extends Client {
     request: (
       builder: TeamMatchesRequestBuilder
     ) => ObjectBuilder<TeamMatchesRequest>
-  ): Cursor<Match> {
+  ) {
     const req = request(new TeamMatchesRequestBuilder()).build();
-    return this.getAll(`/teams/${req.teamId}/matches`, req.params());
+    return this.getAll<Match>(`/teams/${req.teamId}/matches`, req.params());
   }
 }
 
-export class EventDivisionMatchesRequestBuilder extends PageableRequestBuilder<EventDivisionMatchesRequestBuilder> {
+export class EventDivisionMatchesRequestBuilder extends PageableRequestBuilder<
+  EventDivisionMatchesRequest,
+  EventDivisionMatchesRequestBuilder
+> {
   #eventId?: number;
   #divisionId?: number;
   #teamIds?: number[];
@@ -69,7 +71,7 @@ export class EventDivisionMatchesRequestBuilder extends PageableRequestBuilder<E
     return this;
   }
 
-  public build() {
+  public override build() {
     return new EventDivisionMatchesRequest(this);
   }
 
@@ -122,7 +124,10 @@ interface EventDivisionMatchesParams extends PageableParams {
   matchnum?: number[];
 }
 
-export class TeamMatchesRequestBuilder extends PageableRequestBuilder<TeamMatchesRequestBuilder> {
+export class TeamMatchesRequestBuilder extends PageableRequestBuilder<
+  TeamMatchesRequest,
+  TeamMatchesRequestBuilder
+> {
   #teamId?: number;
   #eventIds?: number[];
   #seasonIds?: number[];
@@ -160,7 +165,7 @@ export class TeamMatchesRequestBuilder extends PageableRequestBuilder<TeamMatche
     return this;
   }
 
-  public build() {
+  public override build() {
     return new TeamMatchesRequest(this);
   }
 

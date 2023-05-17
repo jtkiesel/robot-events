@@ -1,29 +1,31 @@
-import type {Season} from '.';
-import {Client} from '../client';
-import type {Cursor} from '../cursor';
+import type {ObjectBuilder} from '../../builders.js';
+import {Client} from '../client.js';
 import {
-  PageableParams,
   PageableRequest,
   PageableRequestBuilder,
-} from '../pageable';
-import type {ObjectBuilder} from '../builders';
+  type PageableParams,
+} from '../pageable.js';
+import type {Season} from './index.js';
 
-export class Seasons extends Client {
+export class SeasonsClient extends Client {
   public findAll(
     request?: (builder: SeasonsRequestBuilder) => ObjectBuilder<SeasonsRequest>
-  ): Cursor<Season> {
-    return this.getAll(
+  ) {
+    return this.getAll<Season>(
       '/seasons',
       request?.(new SeasonsRequestBuilder()).build().params()
     );
   }
 
-  public async findById(id: number): Promise<Season> {
-    return this.get(`/seasons/${id}`);
+  public async findById(id: number) {
+    return this.get<Season>(`/seasons/${id}`);
   }
 }
 
-export class SeasonsRequestBuilder extends PageableRequestBuilder<SeasonsRequestBuilder> {
+export class SeasonsRequestBuilder extends PageableRequestBuilder<
+  SeasonsRequest,
+  SeasonsRequestBuilder
+> {
   #ids?: number[];
   #programIds?: number[];
   #teamIds?: number[];
@@ -61,7 +63,7 @@ export class SeasonsRequestBuilder extends PageableRequestBuilder<SeasonsRequest
     return this;
   }
 
-  public build() {
+  public override build() {
     return new SeasonsRequest(this);
   }
 

@@ -1,18 +1,17 @@
-import type {Event, EventLevel, EventType} from '.';
-import {Client} from '../client';
-import type {Cursor} from '../cursor';
+import type {ObjectBuilder} from '../../builders.js';
+import {Client} from '../client.js';
 import {
-  PageableParams,
   PageableRequest,
   PageableRequestBuilder,
-} from '../pageable';
-import type {ObjectBuilder} from '../builders';
+  type PageableParams,
+} from '../pageable.js';
+import type {Event, EventLevel, EventType} from './index.js';
 
-export class Events extends Client {
+export class EventsClient extends Client {
   public findAll(
     request?: (builder: EventsRequestBuilder) => ObjectBuilder<EventsRequest>
-  ): Cursor<Event> {
-    return this.getAll(
+  ) {
+    return this.getAll<Event>(
       '/events',
       request?.(new EventsRequestBuilder()).build().params()
     );
@@ -22,26 +21,29 @@ export class Events extends Client {
     request: (
       builder: SeasonEventsRequestBuilder
     ) => ObjectBuilder<SeasonEventsRequest>
-  ): Cursor<Event> {
+  ) {
     const req = request(new SeasonEventsRequestBuilder()).build();
-    return this.getAll(`/seasons/${req.seasonId}/events`, req.params());
+    return this.getAll<Event>(`/seasons/${req.seasonId}/events`, req.params());
   }
 
   public findAllByTeam(
     request: (
       builder: TeamEventsRequestBuilder
     ) => ObjectBuilder<TeamEventsRequest>
-  ): Cursor<Event> {
+  ) {
     const req = request(new TeamEventsRequestBuilder()).build();
-    return this.getAll(`/teams/${req.teamId}/events`, req.params());
+    return this.getAll<Event>(`/teams/${req.teamId}/events`, req.params());
   }
 
-  public async findById(id: number): Promise<Event> {
-    return this.get(`/events/${id}`);
+  public async findById(id: number) {
+    return this.get<Event>(`/events/${id}`);
   }
 }
 
-export class EventsRequestBuilder extends PageableRequestBuilder<EventsRequestBuilder> {
+export class EventsRequestBuilder extends PageableRequestBuilder<
+  EventsRequest,
+  EventsRequestBuilder
+> {
   #ids?: number[];
   #skus?: string[];
   #teamIds?: number[];
@@ -97,7 +99,7 @@ export class EventsRequestBuilder extends PageableRequestBuilder<EventsRequestBu
     return this;
   }
 
-  public build() {
+  public override build() {
     return new EventsRequest(this);
   }
 
@@ -156,7 +158,10 @@ interface EventsParams extends PageableParams {
   eventType?: EventType[];
 }
 
-export class SeasonEventsRequestBuilder extends PageableRequestBuilder<SeasonEventsRequestBuilder> {
+export class SeasonEventsRequestBuilder extends PageableRequestBuilder<
+  SeasonEventsRequest,
+  SeasonEventsRequestBuilder
+> {
   #seasonId?: number;
   #skus?: string[];
   #teamIds?: number[];
@@ -194,7 +199,7 @@ export class SeasonEventsRequestBuilder extends PageableRequestBuilder<SeasonEve
     return this;
   }
 
-  public build() {
+  public override build() {
     return new SeasonEventsRequest(this);
   }
 
@@ -244,7 +249,10 @@ interface SeasonEventsParams extends PageableParams {
   level?: EventLevel[];
 }
 
-export class TeamEventsRequestBuilder extends PageableRequestBuilder<TeamEventsRequestBuilder> {
+export class TeamEventsRequestBuilder extends PageableRequestBuilder<
+  TeamEventsRequest,
+  TeamEventsRequestBuilder
+> {
   #teamId?: number;
   #skus?: string[];
   #seasonIds?: number[];
@@ -282,7 +290,7 @@ export class TeamEventsRequestBuilder extends PageableRequestBuilder<TeamEventsR
     return this;
   }
 
-  public build() {
+  public override build() {
     return new TeamEventsRequest(this);
   }
 

@@ -1,34 +1,36 @@
-import type {Skill, SkillType} from '.';
-import {Client} from '../client';
-import type {Cursor} from '../cursor';
+import type {ObjectBuilder} from '../../builders.js';
+import {Client} from '../client.js';
 import {
-  PageableParams,
   PageableRequest,
   PageableRequestBuilder,
-} from '../pageable';
-import type {ObjectBuilder} from '../builders';
+  type PageableParams,
+} from '../pageable.js';
+import type {Skill, SkillType} from './index.js';
 
-export class Skills extends Client {
+export class SkillsClient extends Client {
   public findAllByEvent(
     request: (
       builder: EventSkillsRequestBuilder
     ) => ObjectBuilder<EventSkillsRequest>
-  ): Cursor<Skill> {
+  ) {
     const req = request(new EventSkillsRequestBuilder()).build();
-    return this.getAll(`/events/${req.eventId}/skills`, req.params());
+    return this.getAll<Skill>(`/events/${req.eventId}/skills`, req.params());
   }
 
   public findAllByTeam(
     request: (
       builder: TeamSkillsRequestBuilder
     ) => ObjectBuilder<TeamSkillsRequest>
-  ): Cursor<Skill> {
+  ) {
     const req = request(new TeamSkillsRequestBuilder()).build();
-    return this.getAll(`/teams/${req.teamId}/skills`, req.params());
+    return this.getAll<Skill>(`/teams/${req.teamId}/skills`, req.params());
   }
 }
 
-export class EventSkillsRequestBuilder extends PageableRequestBuilder<EventSkillsRequestBuilder> {
+export class EventSkillsRequestBuilder extends PageableRequestBuilder<
+  EventSkillsRequest,
+  EventSkillsRequestBuilder
+> {
   #eventId?: number;
   #teamIds?: number[];
   #types?: SkillType[];
@@ -48,7 +50,7 @@ export class EventSkillsRequestBuilder extends PageableRequestBuilder<EventSkill
     return this;
   }
 
-  public build() {
+  public override build() {
     return new EventSkillsRequest(this);
   }
 
@@ -80,7 +82,10 @@ interface EventSkillsParams extends PageableParams {
   type?: SkillType[];
 }
 
-export class TeamSkillsRequestBuilder extends PageableRequestBuilder<TeamSkillsRequestBuilder> {
+export class TeamSkillsRequestBuilder extends PageableRequestBuilder<
+  TeamSkillsRequest,
+  TeamSkillsRequestBuilder
+> {
   #teamId?: number;
   #eventIds?: number[];
   #types?: SkillType[];
@@ -106,7 +111,7 @@ export class TeamSkillsRequestBuilder extends PageableRequestBuilder<TeamSkillsR
     return this;
   }
 
-  public build() {
+  public override build() {
     return new TeamSkillsRequest(this);
   }
 
