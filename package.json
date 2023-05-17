@@ -1,6 +1,6 @@
 {
   "name": "@robotevents/client",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A Robot Events API client.",
   "keywords": [
     "Robot Events",
