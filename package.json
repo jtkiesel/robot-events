@@ -1,6 +1,6 @@
 {
   "name": "@robotevents/client",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Robot Events API client.",
   "keywords": [
     "Robot Events",
@@ -25,16 +25,9 @@
   },
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./v1": {
-      "import": "./dist/v1/index.js",
-      "types": "./dist/v1/index.d.ts"
-    }
+    ".": "./src/index.ts",
+    "./v1": "./src/v1/index.ts"
   },
-  "main": "dist/index.js",
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -fr dist",
