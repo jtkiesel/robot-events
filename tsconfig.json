@@ -3,7 +3,6 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "esModuleInterop": true,
     "incremental": true,
     "lib": ["ESNext"],
     "module": "ESNext",
@@ -22,8 +21,7 @@
     "strict": true,
     "target": "ES2020",
     "tsBuildInfoFile": "dist/.tsbuildinfo",
-    "useDefineForClassFields": true,
-    "verbatimModuleSyntax": true
+    "useDefineForClassFields": true
   },
   "include": ["src"]
 }
